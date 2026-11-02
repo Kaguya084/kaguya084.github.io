@@ -1,0 +1,20 @@
+[
+  {
+    "name": "校园日程助手",
+    "desc": "不做日历，只做日历的上游。AI 解析 → 人眼核对 → 导出 iOS 日历。",
+    "url": "https://kaguya084.github.io/Time_Table/",
+    "tag": "交付"
+  },
+  {
+    "name": "校园健康助手",
+    "desc": "不做数据看板，做数字健康的行动闭环。健康记录 → AI 分析 → 行动建议 → 转 JSON → 日程落地。",
+    "url": "https://kaguya084.github.io/bio-tracker/",
+    "tag": "Beta"
+  },
+  {
+    "name": "智造跃迁",
+    "desc": "思政课展演。从制造大国到智造强国，纯前端交互叙事。",
+    "url": "https://kaguya084.github.io/temp_2026/",
+    "tag": "展演"
+  }
+]
