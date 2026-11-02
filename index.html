@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark light">
+<title>Kaguya_084 · Project Labyrinth</title>
+<meta name="description" content="Kaguya_084 的个人主页。独立开发者，信仰极简、原生、可离线。零依赖单文件网页实践，交付校园日程助手、健康助手等工具。">
+<meta property="og:title" content="Kaguya_084 · Project Labyrinth">
+<meta property="og:description" content="独立开发者。把碎片需求做成能跑的东西——零依赖，拿来即用。">
+<meta property="og:type" content="website">
+<style>
+/* ============ 主题变量 ============ */
+:root {
+  --bg: #0a0a0c;
+  --bg-elev: #101014;
+  --fg: #c8c8d0;
+  --fg-dim: #6b6b78;
+  --accent: #6ee7b7;
+  --line: #1f1f28;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+[data-theme="light"] {
+  --bg: #fafafa;
+  --bg-elev: #ffffff;
+  --fg: #1a1a1f;
+  --fg-dim: #6b6b78;
+  --accent: #0d9488;
+  --line: #e4e4e8;
+}
+
+/* ============ 基础 ============ */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  min-height: 100dvh;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: ui-monospace, 'Cascadia Code', 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 15px;
+  line-height: 1.7;
+  padding-top: var(--safe-top);
+  padding-bottom: var(--safe-bottom);
+  transition: background .25s, color .25s;
+}
+
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+.wrap {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* ============ 顶栏 ============ */
+header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: color-mix(in srgb, var(--bg) 85%, transparent);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--line);
+}
+header .wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 56px;
+}
+.brand {
+  font-weight: 600;
+  color: var(--fg);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.brand span { color: var(--accent); }
+
+#themeToggle {
+  flex: none;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--bg-elev);
+  color: var(--fg);
+  font-family: inherit;
+  font-size: 16px;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+}
+#themeToggle:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ============ Hero ============ */
+.hero {
+  padding: 72px 0 56px;
+  border-bottom: 1px solid var(--line);
+}
+.hero h1 {
+  font-size: clamp(28px, 7vw, 44px);
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--fg);
+}
+.hero h1 span { color: var(--accent); }
+.hero p {
+  margin-top: 16px;
+  color: var(--fg-dim);
+  font-size: 14px;
+  max-width: 44ch;
+}
+.hero .meta {
+  margin-top: 28px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  font-size: 13px;
+  color: var(--fg-dim);
+}
+.hero .meta span { white-space: nowrap; }
+
+/* ============ 区块 ============ */
+section { padding: 48px 0; border-bottom: 1px solid var(--line); }
+section:last-of-type { border-bottom: 0; }
+
+.label {
+  font-size: 12px;
+  color: var(--fg-dim);
+  margin-bottom: 24px;
+  letter-spacing: .02em;
+}
+.label::before { content: '~/'; color: var(--accent); }
+
+/* ============ 项目卡片 ============ */
+.projects { display: grid; gap: 12px; }
+
+.card {
+  display: block;
+  padding: 18px 20px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--bg-elev);
+  color: var(--fg);
+  transition: border-color .2s, transform .2s;
+}
+.card:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+  text-decoration: none;
+}
+.card-head {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+.card-head strong {
+  font-size: 15px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.card-tag {
+  flex: none;
+  font-size: 11px;
+  color: var(--accent);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 1px 6px;
+}
+.card-desc {
+  font-size: 13px;
+  color: var(--fg-dim);
+  line-height: 1.6;
+}
+
+/* ============ About ============ */
+.about p { font-size: 14px; color: var(--fg); max-width: 56ch; }
+.about p + p { margin-top: 12px; color: var(--fg-dim); }
+
+/* ============ Contact ============ */
+.links { display: flex; flex-wrap: wrap; gap: 10px 24px; font-size: 14px; }
+.links a { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
+.links a::before { content: '→'; color: var(--fg-dim); }
+
+/* ============ 页脚 ============ */
+footer {
+  padding: 32px 0 calc(32px + var(--safe-bottom));
+  font-size: 12px;
+  color: var(--fg-dim);
+  text-align: center;
+}
+
+/* ============ 揭示动效 ============ */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity .4s ease, transform .4s ease;
+}
+[data-reveal].revealed { opacity: 1; transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal] { opacity: 1; transform: none; transition: none; }
+  html { scroll-behavior: auto; }
+  .card:hover { transform: none; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="brand">Kaguya<span>_084</span></div>
+    <button id="themeToggle" aria-label="切换主题">◐</button>
+  </div>
+</header>
+
+<main>
+
+  <!-- Hero -->
+  <div class="hero wrap" data-reveal>
+    <h1>Project <span>Labyrinth</span></h1>
+    <p>独立开发者。把碎片需求做成能跑的东西——零依赖，拿来即用。</p>
+    <div class="meta">
+      <span>Vanilla HTML / CSS / JS</span>
+      <span>零依赖</span>
+      <span>零后端</span>
+    </div>
+  </div>
+
+  <!-- Projects -->
+  <section class="wrap" data-reveal>
+    <div class="label">projects</div>
+    <div class="projects" id="projectList"></div>
+  </section>
+
+  <!-- About -->
+  <section class="about wrap" data-reveal>
+    <div class="label">about</div>
+    <p>在做“日历的上游”：AI 负责解析碎片文本，网页负责人眼核对，最终导出标准 iOS 日历。</p>
+    <p>数学系在读，所以对“把杂乱信息结构化”有执念——解析要严格，核对要人眼，导出要标准。</p>
+    <p>公众号「代号K：迷宫计划」主理人。相信极简、原生、可离线。</p>
+  </section>
+
+  <!-- Contact -->
+  <section class="wrap" data-reveal>
+    <div class="label">contact</div>
+    <div class="links">
+      <a href="https://github.com/Kaguya084" target="_blank" rel="noopener">GitHub</a>
+      <span style="color: var(--fg-dim); display: inline-flex; align-items: center; gap: 6px;">
+        <span style="color: var(--fg-dim);">→</span> 代号K：迷宫计划 (公众号)
+      </span>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  © <span id="year"></span> Project Labyrinth · Built with Vanilla JS
+</footer>
+
+<script>
+/* ============ 主题三态：system → dark → light → system ============ */
+(function () {
+  const root = document.documentElement;
+  const btn = document.getElementById('themeToggle');
+  const KEY = 'pl-theme';
+  const order = ['system', 'dark', 'light'];
+  const icon = { system: '◐', dark: '●', light: '○' };
+
+  function apply(mode) {
+    if (mode === 'system') {
+      root.dataset.theme =
+        matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    } else {
+      root.dataset.theme = mode;
+    }
+    btn.textContent = icon[mode];
+    btn.title = '主题：' + mode;
+    localStorage.setItem(KEY, mode);
+  }
+
+  let cur = localStorage.getItem(KEY) || 'system';
+  apply(cur);
+
+  btn.addEventListener('click', () => {
+    cur = order[(order.indexOf(cur) + 1) % order.length];
+    apply(cur);
+  });
+})();
+
+/* ============ 项目数据：远程 JSON + 本地兜底 ============ */
+const FALLBACK_PROJECTS = [
+  {
+    name: '校园日程助手',
+    desc: '不做日历，只做日历的上游。AI 解析 → 人眼核对 → 导出 iOS 日历。',
+    url: 'https://kaguya084.github.io/Time_Table/',
+    tag: '交付',
+  },
+  {
+    name: '校园健康助手',
+    desc: '不做数据看板，做数字健康的行动闭环。健康记录 → AI 分析 → 行动建议 → 转 JSON → 日程落地。',
+    url: 'https://kaguya084.github.io/bio-tracker/',
+    tag: 'Beta',
+  },
+  {
+    name: '智造跃迁',
+    desc: '思政课展演。从制造大国到智造强国，纯前端交互叙事。',
+    url: 'https://kaguya084.github.io/temp_2026/',
+    tag: '展演',
+  },
+];
+
+function renderProjects(projects) {
+  const box = document.getElementById('projectList');
+  box.innerHTML = ''; // 清空，防止重复渲染
+  projects.forEach(p => {
+    const a = document.createElement('a');
+    a.className = 'card';
+    a.href = p.url || '#';
+    if (a.href !== '#' && !a.href.endsWith('#')) {
+      a.target = '_blank';
+      a.rel = 'noopener';
+    }
+
+    const head = document.createElement('div');
+    head.className = 'card-head';
+    const name = document.createElement('strong');
+    name.textContent = p.name || '未命名';
+    const tag = document.createElement('span');
+    tag.className = 'card-tag';
+    tag.textContent = p.tag || '';
+    head.append(name, tag);
+
+    const desc = document.createElement('div');
+    desc.className = 'card-desc';
+    desc.textContent = p.desc || '';
+
+    a.append(head, desc);
+    box.appendChild(a);
+  });
+}
+
+(function initProjects() {
+  // 1. 先渲染兜底数据，页面永远不空
+  renderProjects(FALLBACK_PROJECTS);
+
+  // 2. 再尝试拉远程，成功则覆盖
+  fetch('./projects.json', { cache: 'no-cache' })
+    .then(r => {
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.json();
+    })
+    .then(data => {
+      if (Array.isArray(data) && data.length > 0) {
+        renderProjects(data);
+      }
+    })
+    .catch(err => {
+      // 静默失败，保留兜底数据；控制台留痕方便调试
+      console.warn('[projects.json] 加载失败，使用本地兜底：', err.message);
+    });
+})();
+
+/* ============ 滚动揭示 ============ */
+(function reveal() {
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    document.querySelectorAll('[data-reveal]').forEach(el => el.classList.add('revealed'));
+    return;
+  }
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('revealed');
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  document.querySelectorAll('[data-reveal]').forEach(el => io.observe(el));
+})();
+
+/* ============ 年份 ============ */
+document.getElementById('year').textContent = new Date().getFullYear();
+</script>
+</body>
+</html>
