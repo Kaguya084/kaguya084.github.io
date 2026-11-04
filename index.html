@@ -50,6 +50,8 @@ body {
 a { color: var(--accent); text-decoration: none; }
 a:hover { text-decoration: underline; }
 
+button { font-family: inherit; }
+
 .wrap {
   max-width: 720px;
   margin: 0 auto;
@@ -73,6 +75,9 @@ header .wrap {
   height: 56px;
 }
 .brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   font-weight: 600;
   color: var(--fg);
   white-space: nowrap;
@@ -80,6 +85,15 @@ header .wrap {
   text-overflow: ellipsis;
 }
 .brand span { color: var(--accent); }
+
+/* 新增的头像样式 */
+.avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid var(--line);
+}
 
 #themeToggle {
   flex: none;
@@ -89,7 +103,6 @@ header .wrap {
   border-radius: 6px;
   background: var(--bg-elev);
   color: var(--fg);
-  font-family: inherit;
   font-size: 16px;
   cursor: pointer;
   -webkit-appearance: none;
@@ -113,8 +126,8 @@ header .wrap {
   margin-top: 16px;
   color: var(--fg-dim);
   font-size: 14px;
-  max-width: 100%;
-  text-wrap: balance; /* 让多行文字尽量均匀分布，更美观 */
+  max-width: 100%;      /* 取消宽度限制 */
+  text-wrap: balance;   /* 让多行文字均匀分布 */
 }
 .hero .meta {
   margin-top: 28px;
@@ -186,9 +199,21 @@ section:last-of-type { border-bottom: 0; }
 .about p + p { margin-top: 12px; color: var(--fg-dim); }
 
 /* ============ Contact ============ */
-.links { display: flex; flex-wrap: wrap; gap: 10px 24px; font-size: 14px; }
-.links a { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
-.links a::before { content: '→'; color: var(--fg-dim); }
+.links { display: flex; flex-wrap: wrap; gap: 16px 24px; font-size: 14px; align-items: center; }
+.links a, .links button { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
+.links a::before, .links button::before { content: '→'; color: var(--fg-dim); }
+.links a:hover, .links button:hover { text-decoration: underline; color: var(--accent); }
+
+/* 公众号复制按钮特调 */
+#copyWechat {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--fg);
+  font-size: inherit;
+  cursor: pointer;
+}
+#copyWechat span { color: var(--fg-dim); font-size: 13px; } /* 提示字变小点 */
 
 /* ============ 页脚 ============ */
 footer {
@@ -197,6 +222,25 @@ footer {
   color: var(--fg-dim);
   text-align: center;
 }
+
+/* ============ 提示框 Toast ============ */
+#toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  background: var(--accent);
+  color: #000;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 600;
+  opacity: 0;
+  pointer-events: none;
+  transition: all .3s;
+  z-index: 100;
+}
+#toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
 /* ============ 揭示动效 ============ */
 [data-reveal] {
@@ -217,7 +261,10 @@ footer {
 
 <header>
   <div class="wrap">
-    <div class="brand">Kaguya<span>_084</span></div>
+    <div class="brand">
+      <img src="./avatar.png" alt="Avatar" class="avatar">
+      <span>Kaguya<span>_084</span></span>
+    </div>
     <button id="themeToggle" aria-label="切换主题">◐</button>
   </div>
 </header>
@@ -244,9 +291,10 @@ footer {
   <!-- About -->
   <section class="about wrap" data-reveal>
     <div class="label">about</div>
-    <p>在做“日历的上游”：AI 负责解析碎片文本，网页负责人眼核对，最终导出标准 iOS 日历。</p>
-    <p>数学系在读，所以对“把杂乱信息结构化”有执念——解析要严格，核对要人眼，导出要标准。</p>
-    <p>公众号「代号K：迷宫计划」主理人。相信极简、原生、可离线。</p>
+    <div style="color: var(--fg-dim); font-size: 13px; line-height: 1.8;">
+      <span style="color: var(--accent);">//</span> 数学系在读。相信极简、原生、Local-first。<br>
+      <span style="color: var(--accent);">//</span> 把杂乱信息结构化，把碎片需求做成能跑的单文件。
+    </div>
   </section>
 
   <!-- Contact -->
@@ -254,9 +302,10 @@ footer {
     <div class="label">contact</div>
     <div class="links">
       <a href="https://github.com/Kaguya084" target="_blank" rel="noopener">GitHub</a>
-      <span style="color: var(--fg-dim); display: inline-flex; align-items: center; gap: 6px;">
-        <span style="color: var(--fg-dim);">→</span> 代号K：迷宫计划 (公众号)
-      </span>
+      
+      <button id="copyWechat" title="点击复制公众号 ID">
+        代号K：迷宫计划 <span>(点击复制 ID)</span>
+      </button>
     </div>
   </section>
 
@@ -368,6 +417,26 @@ function renderProjects(projects) {
       console.warn('[projects.json] 加载失败，使用本地兜底：', err.message);
     });
 })();
+
+/* ============ 复制公众号 ID ============ */
+const copyBtn = document.getElementById('copyWechat');
+if (copyBtn) {
+  copyBtn.addEventListener('click', () => {
+    navigator.clipboard.writeText('Kaguya084').then(() => {
+      let toast = document.getElementById('toast');
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'toast';
+        document.body.appendChild(toast);
+      }
+      toast.textContent = '已复制公众号 ID: Kaguya084';
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2000);
+    }).catch(err => {
+      console.warn('复制失败，请手动输入：Kaguya084');
+    });
+  });
+}
 
 /* ============ 滚动揭示 ============ */
 (function reveal() {
